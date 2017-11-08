@@ -1,0 +1,21 @@
+{
+    "name": "e-yunduan/yii2-aip-speech",
+    "description": "百度语音合成",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","speech","baidu"],
+    "license": "BSD-4-Clause",
+    "authors": [
+        {
+            "name": "forecho",
+            "email": "caizhenghai@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "eyunduan\\aipSpeech\\": "src"
+        }
+    }
+}
