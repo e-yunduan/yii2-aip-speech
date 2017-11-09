@@ -19,7 +19,7 @@ class BaiduSpeech extends Component
      * 百度语音合成接口每次请求文本必须小于512个中文字或者英文数字
      * @var integer
      */
-    const SLICE_LENGTH = 250;
+    const SLICE_LENGTH = 500;
 
     /**
      * 百度语音 App ID
