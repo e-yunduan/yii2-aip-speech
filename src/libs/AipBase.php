@@ -229,7 +229,7 @@ class AipBase
      */
     private function getAuthFilePath()
     {
-        return dirname(__FILE__) . DIRECTORY_SEPARATOR . md5($this->apiKey);
+        return \Yii::getAlias('@runtime/cache') . DIRECTORY_SEPARATOR . md5($this->apiKey);
     }
 
     /**

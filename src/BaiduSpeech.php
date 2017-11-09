@@ -19,7 +19,7 @@ class BaiduSpeech extends Component
      * 百度语音合成接口每次请求文本必须小于512个中文字或者英文数字
      * @var integer
      */
-    const SLICE_LENGTH = 500;
+    const SLICE_LENGTH = 250;
 
     /**
      * 百度语音 App ID
@@ -116,7 +116,7 @@ class BaiduSpeech extends Component
                 'data' => $response['result']
             ];
         } else {
-            $return['msg'] = '语音识别错误,错误码:' . $response['error_code'] . ',错误信息:' . $response['error_msg'];
+            $return['msg'] = '语音识别错误,错误码:' . $response['err_no'] . ',错误信息:' . $response['err_msg'];
         }
         return $return;
     }
@@ -142,6 +142,7 @@ class BaiduSpeech extends Component
             $return['msg'] = '缺少合成的文本';
             return $return;
         }
+        $text = strip_tags($text); // 去掉 HTML 标签
         if ($speed < 0 || $speed > 9) {
             $return['msg'] = '语速错误';
             return $return;
@@ -170,13 +171,13 @@ class BaiduSpeech extends Component
             $options['cuid'] = $userID;
         }
 
-        $number = mb_strlen($text) / self::SLICE_LENGTH;
+        $number = mb_strlen($text, 'UTF-8') / self::SLICE_LENGTH;
         if ($number > 1) {
             $response = '';
             for ($x = 0; $x <= $number; $x++) {
-                $result = $aipSpeech->synthesis(mb_substr($text, $x * self::SLICE_LENGTH, self::SLICE_LENGTH), $lan, 1, $options);
-                if (isset($result['error_code'])) {
-                    $return['msg'] = '语音合成错误,错误码:' . $result['error_code'] . ',错误信息:' . $result['error_msg'];
+                $result = $aipSpeech->synthesis(mb_substr($text, $x * self::SLICE_LENGTH, self::SLICE_LENGTH, 'UTF-8'), $lan, 1, $options);
+                if (is_array($result) && isset($result['err_no'])) {
+                    $return['msg'] = '语音合成错误,错误码:' . $result['err_no'] . ',错误信息:' . $result['err_msg'];
                     return $return;
                 }
                 $response .= $result;
@@ -185,7 +186,6 @@ class BaiduSpeech extends Component
             // 小于512个中文字或者英文数字
             $response = $aipSpeech->synthesis($text, $lan, 1, $options);
         }
-
         if (!is_array($response)) {
             !$fileName && $fileName = uniqid() . '.mp3';
             $this->putFile($fileName, $response);
@@ -195,7 +195,7 @@ class BaiduSpeech extends Component
                 'data' => $this->path . $fileName
             ];
         } else {
-            $return['msg'] = '语音合成错误,错误码:' . $response['error_code'] . ',错误信息:' . $response['error_msg'];
+            $return['msg'] = '语音合成错误,错误码:' . $response['err_no'] . ',错误信息:' . $response['err_msg'];
         }
         return $return;
     }
