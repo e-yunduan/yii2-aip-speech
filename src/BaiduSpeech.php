@@ -143,6 +143,7 @@ class BaiduSpeech extends Component
             return $return;
         }
         $text = strip_tags($text); // 去掉 HTML 标签
+        $text = preg_replace("/&#?[a-z0-9]{2,8};/i", "", $text); // 去掉空格
         if ($speed < 0 || $speed > 9) {
             $return['msg'] = '语速错误';
             return $return;
